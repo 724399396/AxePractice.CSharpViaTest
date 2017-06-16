@@ -56,28 +56,30 @@ namespace CSharpViaTest.Collections._10_EnumerablePractices
 
         class SkippedEnumerator<T> : IEnumerator<T>
         {
+            IEnumerator<T> enumrator;
             public SkippedEnumerator(IEnumerable<T> collection)
             {
-                throw new NotImplementedException();
+                this.enumrator = collection.GetEnumerator();
             }
 
             public bool MoveNext()
             {
-                throw new NotImplementedException();
+                return enumrator.MoveNext() && enumrator.MoveNext();
             }
 
             public void Reset()
             {
-                throw new NotImplementedException();
+                enumrator.Reset();
             }
 
-            public T Current => throw new NotImplementedException();
+            public T Current => enumrator.Current;
 
             object IEnumerator.Current => Current;
 
             public void Dispose()
             {
-                throw new NotImplementedException();
+                enumrator.Dispose();
+                enumrator = null;
             }
         }
 

@@ -37,7 +37,15 @@ namespace CSharpViaTest.Collections._10_EnumerablePractices
             this IEnumerable<TSource> source,
             Func<TSource, TSource, TSource> func)
         {
-            throw new NotImplementedException();
+            var enumrator = source.GetEnumerator();
+            if (!enumrator.MoveNext()) {
+                throw new InvalidOperationException();
+            }
+            var result = enumrator.Current;
+            while (enumrator.MoveNext()) {
+                result = func(result, enumrator.Current);
+            }
+            return result;
         }
 
         #endregion
