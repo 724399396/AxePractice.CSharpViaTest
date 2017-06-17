@@ -97,9 +97,7 @@ namespace CSharpViaTest.Collections._10_EnumerablePractices
                 stack.Push(root);
             }
 
-            public TreeNode Current { get {
-                return current;
-            } }
+            public TreeNode Current => current;
 
             object IEnumerator.Current => Current;
 

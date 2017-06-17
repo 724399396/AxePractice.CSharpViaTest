@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -101,9 +102,45 @@ namespace CSharpViaTest.Collections._40_CommonManipulation
 
         class PokerComparer : IComparer<Card>
         {
+           
+
+            public PokerComparer()
+            {
+                List<CardRank> rankOrdList = new List<CardRank>
+                {
+                    CardRank.Joker, CardRank.Rank3, CardRank.Rank2,
+                    CardRank.RankA, CardRank.RankK, CardRank.RankQ,
+                    CardRank.RankJ, CardRank.Rank10, CardRank.Rank9,
+                    CardRank.Rank8, CardRank.Rank7, CardRank.Rank6,
+                    CardRank.Rank5, CardRank.Rank4
+                };
+                RankDict = ListToReverseIndexedDict(rankOrdList);
+
+                List<CardSuit> suitOrdList = new List<CardSuit>
+                {
+                    CardSuit.Hearts, CardSuit.Diamonds,
+                    CardSuit.Spades, CardSuit.Clubs
+                };
+                SuitDict = ListToReverseIndexedDict(suitOrdList);
+            }
+
+            private Dictionary<T, int> ListToReverseIndexedDict<T> (List<T> srcList)
+            {
+                srcList.Reverse();
+                return srcList.Zip(Enumerable
+                    .Range(1, srcList.Count), (cr, ord) => new KeyValuePair<T, int>(cr, ord)).ToDictionary(p => p.Key, p => p.Value);
+            }
+
+            public Dictionary<CardSuit, int> SuitDict { get; set; }
+
+            public Dictionary<CardRank, int> RankDict { get; set; }
+
             public int Compare(Card x, Card y)
             {
-                throw new System.NotImplementedException();
+                int rankCompare = RankDict[x.Rank].CompareTo(RankDict[y.Rank]);
+                if (rankCompare != 0)
+                    return rankCompare;
+                return SuitDict[x.Suit].CompareTo(SuitDict[y.Suit]);
             }
         }
 

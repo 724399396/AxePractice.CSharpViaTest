@@ -66,19 +66,19 @@ namespace CSharpViaTest.Collections._10_EnumerablePractices
         class DistinctEnumerator<TSource> : IEnumerator<TSource>
         {
             IEnumerator<TSource> source;
-            ISet<TSource> meetRecord;
+            ISet<TSource> occureRecord;
             TSource current;
             public DistinctEnumerator(IEnumerable<TSource> source, IEqualityComparer<TSource> comparer)
             {
                 this.source = source.GetEnumerator();
-                meetRecord = new HashSet<TSource>(comparer);
+                occureRecord = new HashSet<TSource>(comparer);
             }
 
             public bool MoveNext()
             {
                 while (source.MoveNext()) {
                     current = source.Current;
-                    if (meetRecord.Add(current)) {
+                    if (occureRecord.Add(current)) {
                         return true;
                     }
                 }
@@ -88,17 +88,17 @@ namespace CSharpViaTest.Collections._10_EnumerablePractices
             public void Reset()
             {
                 source.Reset();
-                meetRecord.Clear();
+                occureRecord.Clear();
             }
 
-            public TSource Current { get { return current; } }
+            public TSource Current => current;
 
             object IEnumerator.Current => Current;
 
             public void Dispose()
             {
                 source = null;
-                meetRecord = null;
+                occureRecord = null;
             }
         }
 

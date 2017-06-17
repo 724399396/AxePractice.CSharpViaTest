@@ -34,9 +34,18 @@ namespace CSharpViaTest.Collections._20_YieldPractices
 
         #region Please modifies the code to pass the test
 
-        public static IEnumerable<TSource> MyDistinct<TSource>(this IEnumerable<TSource> source, IEqualityComparer<TSource> comparer)
+        public static IEnumerable<TSource> MyDistinct<TSource>(this IEnumerable<TSource> source,
+            IEqualityComparer<TSource> comparer)
         {
-            throw new NotImplementedException();
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            ISet<TSource> occurRecord = new HashSet<TSource>(comparer);
+            foreach (var item in source)
+            {
+                if (occurRecord.Add(item))
+                {
+                    yield return item;
+                }
+            }
         }
 
         #endregion
@@ -48,7 +57,7 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
         public void SameResultsRepeatCallsIntQuery()
         {
-            IEnumerable<int> q = from x in new[] { 0, 9999, 0, 888, -1, 66, -1, -777, 1, 2, -12345, 66, 66, -1, -1 }
+            IEnumerable<int> q = from x in new[] {0, 9999, 0, 888, -1, 66, -1, -777, 1, 2, -12345, 66, 66, -1, -1}
                 where x > int.MinValue
                 select x;
 
@@ -59,7 +68,7 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
         public void SameResultsRepeatCallsStringQuery()
         {
-            IEnumerable<string> q = from x in new[] { "!@#$%^", "C", "AAA", "Calling Twice", "SoS" }
+            IEnumerable<string> q = from x in new[] {"!@#$%^", "C", "AAA", "Calling Twice", "SoS"}
                 where string.IsNullOrEmpty(x)
                 select x;
 
@@ -84,8 +93,8 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void SingleNullElementExplicitlyUseDefaultComparer()
         {
-            string[] source = { null };
-            string[] expected = { null };
+            string[] source = {null};
+            string[] expected = {null};
 
             Assert.Equal(expected, source.MyDistinct(EqualityComparer<string>.Default));
         }
@@ -93,8 +102,8 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void EmptyStringDistinctFromNull()
         {
-            string[] source = { null, null, string.Empty };
-            string[] expected = { null, string.Empty };
+            string[] source = {null, null, string.Empty};
+            string[] expected = {null, string.Empty};
 
             Assert.Equal(expected, source.MyDistinct(EqualityComparer<string>.Default));
         }
@@ -102,8 +111,8 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void CollapsDuplicateNulls()
         {
-            string[] source = { null, null };
-            string[] expected = { null };
+            string[] source = {null, null};
+            string[] expected = {null};
 
             Assert.Equal(expected, source.MyDistinct(EqualityComparer<string>.Default));
         }
@@ -111,8 +120,8 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void SourceAllDuplicates()
         {
-            int[] source = { 5, 5, 5, 5, 5, 5 };
-            int[] expected = { 5 };
+            int[] source = {5, 5, 5, 5, 5, 5};
+            int[] expected = {5};
 
             Assert.Equal(expected, source.MyDistinct());
         }
@@ -120,7 +129,7 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void AllUnique()
         {
-            int[] source = { 2, -5, 0, 6, 10, 9 };
+            int[] source = {2, -5, 0, 6, 10, 9};
 
             Assert.Equal(source, source.MyDistinct());
         }
@@ -128,8 +137,8 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void SomeDuplicatesIncludingNulls()
         {
-            int?[] source = { 1, 1, 1, 2, 2, 2, null, null };
-            int?[] expected = { 1, 2, null };
+            int?[] source = {1, 1, 1, 2, 2, 2, null, null};
+            int?[] expected = {1, 2, null};
 
             Assert.Equal(expected, source.MyDistinct());
         }
@@ -137,8 +146,8 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void SomeDuplicatesIncludingNullsRunOnce()
         {
-            int?[] source = { 1, 1, 1, 2, 2, 2, null, null };
-            int?[] expected = { 1, 2, null };
+            int?[] source = {1, 1, 1, 2, 2, 2, null, null};
+            int?[] expected = {1, 2, null};
 
             Assert.Equal(expected, source.RunOnce().MyDistinct());
         }
@@ -146,8 +155,8 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void LastSameAsFirst()
         {
-            int[] source = { 1, 2, 3, 4, 5, 1 };
-            int[] expected = { 1, 2, 3, 4, 5 };
+            int[] source = {1, 2, 3, 4, 5, 1};
+            int[] expected = {1, 2, 3, 4, 5};
 
             Assert.Equal(expected, source.MyDistinct());
         }
@@ -156,8 +165,8 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void RepeatsNonConsecutive()
         {
-            int[] source = { 1, 1, 2, 2, 4, 3, 1, 3, 2 };
-            int[] expected = { 1, 2, 4, 3 };
+            int[] source = {1, 1, 2, 2, 4, 3, 1, 3, 2};
+            int[] expected = {1, 2, 4, 3};
 
             Assert.Equal(expected, source.MyDistinct());
         }
@@ -165,8 +174,8 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void RepeatsNonConsecutiveRunOnce()
         {
-            int[] source = { 1, 1, 2, 2, 4, 3, 1, 3, 2 };
-            int[] expected = { 1, 2, 4, 3 };
+            int[] source = {1, 1, 2, 2, 4, 3, 1, 3, 2};
+            int[] expected = {1, 2, 4, 3};
 
             Assert.Equal(expected, source.RunOnce().MyDistinct());
         }
@@ -174,8 +183,8 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void NullComparer()
         {
-            string[] source = { "Bob", "Tim", "bBo", "miT", "Robert", "iTm" };
-            string[] expected = { "Bob", "Tim", "bBo", "miT", "Robert", "iTm" };
+            string[] source = {"Bob", "Tim", "bBo", "miT", "Robert", "iTm"};
+            string[] expected = {"Bob", "Tim", "bBo", "miT", "Robert", "iTm"};
 
             Assert.Equal(expected, source.MyDistinct());
         }
@@ -199,8 +208,8 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void CustomEqualityComparer()
         {
-            string[] source = { "Bob", "Tim", "bBo", "miT", "Robert", "iTm" };
-            string[] expected = { "Bob", "Tim", "Robert" };
+            string[] source = {"Bob", "Tim", "bBo", "miT", "Robert", "iTm"};
+            string[] expected = {"Bob", "Tim", "Robert"};
 
             Assert.Equal(expected, source.MyDistinct(new AnagramEqualityComparer()), new AnagramEqualityComparer());
         }
@@ -208,10 +217,11 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void CustomEqualityComparerRunOnce()
         {
-            string[] source = { "Bob", "Tim", "bBo", "miT", "Robert", "iTm" };
-            string[] expected = { "Bob", "Tim", "Robert" };
+            string[] source = {"Bob", "Tim", "bBo", "miT", "Robert", "iTm"};
+            string[] expected = {"Bob", "Tim", "Robert"};
 
-            Assert.Equal(expected, source.RunOnce().MyDistinct(new AnagramEqualityComparer()), new AnagramEqualityComparer());
+            Assert.Equal(expected, source.RunOnce().MyDistinct(new AnagramEqualityComparer()),
+                new AnagramEqualityComparer());
         }
 
         [Theory, MemberData(nameof(SequencesWithDuplicates))]
@@ -235,13 +245,15 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         public static IEnumerable<object[]> SequencesWithDuplicates()
         {
             // Validate an array of different numeric data types.
-            yield return new object[] { 0, new[] { 1, 1, 1, 2, 3, 5, 5, 6, 6, 10 } };
-            yield return new object[] { 0L, new long[] { 1, 1, 1, 2, 3, 5, 5, 6, 6, 10 } };
-            yield return new object[] { 0F, new float[] { 1, 1, 1, 2, 3, 5, 5, 6, 6, 10 } };
-            yield return new object[] { 0.0, new double[] { 1, 1, 1, 2, 3, 5, 5, 6, 6, 10 } };
-            yield return new object[] { 0M, new decimal[] { 1, 1, 1, 2, 3, 5, 5, 6, 6, 10 } };
+            yield return new object[] {0, new[] {1, 1, 1, 2, 3, 5, 5, 6, 6, 10}};
+            yield return new object[] {0L, new long[] {1, 1, 1, 2, 3, 5, 5, 6, 6, 10}};
+            yield return new object[] {0F, new float[] {1, 1, 1, 2, 3, 5, 5, 6, 6, 10}};
+            yield return new object[] {0.0, new double[] {1, 1, 1, 2, 3, 5, 5, 6, 6, 10}};
+            yield return new object[] {0M, new decimal[] {1, 1, 1, 2, 3, 5, 5, 6, 6, 10}};
             // Try strings
-            yield return new object[] { "", new []
+            yield return new object[]
+            {
+                "", new[]
                 {
                     "add",
                     "add",
@@ -261,12 +273,12 @@ namespace CSharpViaTest.Collections._20_YieldPractices
                 }
             };
         }
-        
+
         [Fact]
         public void ToArray()
         {
-            int?[] source = { 1, 1, 1, 2, 2, 2, null, null };
-            int?[] expected = { 1, 2, null };
+            int?[] source = {1, 1, 1, 2, 2, 2, null, null};
+            int?[] expected = {1, 2, null};
 
             Assert.Equal(expected, source.MyDistinct().ToArray());
         }
@@ -274,8 +286,8 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void ToList()
         {
-            int?[] source = { 1, 1, 1, 2, 2, 2, null, null };
-            int?[] expected = { 1, 2, null };
+            int?[] source = {1, 1, 1, 2, 2, 2, null, null};
+            int?[] expected = {1, 2, null};
 
             Assert.Equal(expected, source.MyDistinct().ToList());
         }
@@ -283,7 +295,7 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void Count()
         {
-            int?[] source = { 1, 1, 1, 2, 2, 2, null, null };
+            int?[] source = {1, 1, 1, 2, 2, 2, null, null};
             Assert.Equal(3, source.MyDistinct().Count());
         }
 
@@ -291,7 +303,7 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
         public void RepeatEnumerating()
         {
-            int?[] source = { 1, 1, 1, 2, 2, 2, null, null };
+            int?[] source = {1, 1, 1, 2, 2, 2, null, null};
 
             IEnumerable<int?> result = source.MyDistinct();
 

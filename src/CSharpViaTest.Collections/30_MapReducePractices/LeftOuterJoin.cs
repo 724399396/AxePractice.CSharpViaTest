@@ -137,7 +137,10 @@ namespace CSharpViaTest.Collections._30_MapReducePractices
 
         static IEnumerable<CategorisedProduct> GroupProductsByCategory(IEnumerable<Product> products, IEnumerable<Category> categories)
         {
-            throw new NotImplementedException();
+            return categories.GroupJoin(products,
+                c => c.Id,
+                p => p.CategoryId,
+                ((c, ps) => new CategorisedProduct(c.Name, ps.Select(p => p.Name).ToList())));
         }
 
         #endregion

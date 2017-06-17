@@ -37,6 +37,10 @@ namespace CSharpViaTest.Collections._10_EnumerablePractices
             this IEnumerable<TSource> source,
             Func<TSource, TSource, TSource> func)
         {
+            if (source == null || func == null)
+            {
+                throw new ArgumentNullException();
+            }
             var enumrator = source.GetEnumerator();
             if (!enumrator.MoveNext()) {
                 throw new InvalidOperationException();
@@ -45,6 +49,7 @@ namespace CSharpViaTest.Collections._10_EnumerablePractices
             while (enumrator.MoveNext()) {
                 result = func(result, enumrator.Current);
             }
+            enumrator.Dispose();
             return result;
         }
 

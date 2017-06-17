@@ -32,7 +32,25 @@ namespace CSharpViaTest.Collections._30_MapReducePractices
 
         static IDictionary<string, ISet<T>> Combine<T>(IDictionary<string, ISet<T>> first, IDictionary<string, ISet<T>> second)
         {
-            throw new NotImplementedException();
+            
+            return first.Concat(second).Aggregate(new Dictionary<string, ISet<T>>()
+                , (acc, x) =>
+                {
+                    var kLower = x.Key.ToLower();
+                    if (!acc.ContainsKey(kLower))
+                    {
+                        acc.Add(kLower, x.Value);
+                    }
+                    else
+                    {
+                        ISet<T> set = acc[kLower];
+                        foreach (var v in x.Value)
+                        {
+                            set.Add(v);
+                        }
+                    }
+                    return acc;
+                });
         }
 
         #endregion
