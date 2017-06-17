@@ -31,11 +31,18 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         public static IEnumerable<TResult> MyCast<TResult>(this IEnumerable source)
         {
             if (source == null)
+            {
                 throw new ArgumentNullException(nameof(source));
+            }
+            return MyCastHelp<TResult>(source);
+        }
+
+        static IEnumerable<TResult> MyCastHelp<TResult>(this IEnumerable source)
+        {
             var enumerator = source.GetEnumerator();
             while (enumerator.MoveNext())
             {
-                yield return (TResult) enumerator.Current;
+                yield return (TResult)enumerator.Current;
             }
         }
         #endregion
@@ -262,7 +269,6 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         [Fact]
         public void NullSource()
         {
-            ((IEnumerable<object>) null).MyCast<string>();
             Assert.Throws<ArgumentNullException>(() => ((IEnumerable<object>)null).MyCast<string>());
         }
 

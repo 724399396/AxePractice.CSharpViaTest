@@ -37,7 +37,16 @@ namespace CSharpViaTest.Collections._20_YieldPractices
         public static IEnumerable<TSource> MyDistinct<TSource>(this IEnumerable<TSource> source,
             IEqualityComparer<TSource> comparer)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            return MyDistinctHelper<TSource>(source, comparer);
+        }
+
+        static IEnumerable<TSource> MyDistinctHelper<TSource>(this IEnumerable<TSource> source,
+            IEqualityComparer<TSource> comparer)
+        {
             ISet<TSource> occurRecord = new HashSet<TSource>(comparer);
             foreach (var item in source)
             {
