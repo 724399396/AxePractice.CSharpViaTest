@@ -43,7 +43,7 @@ namespace CSharpViaTest.Collections._20_YieldPractices
             while (next) {
                 try {
                   next = enumerator.MoveNext();
-                } catch (Exception) {
+                } catch {
                     yield break;
                 }
                 if (next) {

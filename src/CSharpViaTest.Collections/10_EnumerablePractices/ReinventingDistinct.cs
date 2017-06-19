@@ -97,6 +97,7 @@ namespace CSharpViaTest.Collections._10_EnumerablePractices
 
             public void Dispose()
             {
+                source.Dispose();
                 source = null;
                 occureRecord = null;
             }
