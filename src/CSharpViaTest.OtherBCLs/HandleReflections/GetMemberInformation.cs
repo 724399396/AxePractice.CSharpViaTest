@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Xunit;
 
 namespace CSharpViaTest.OtherBCLs.HandleReflections
@@ -59,7 +61,34 @@ namespace CSharpViaTest.OtherBCLs.HandleReflections
 
         static IEnumerable<string> GetInstanceMemberInformation(Type type)
         {
-            throw new NotImplementedException();
+            var property = type.GetProperties();
+            var result =  new List<string> {
+                $"Member information for {type.FullName}"
+            }.Concat(
+                type.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).Select(c => "Non-public constructor: " + paramterString(c.GetParameters()))
+            ).Concat(
+                type.GetConstructors(BindingFlags.Public | BindingFlags.Instance).Select(c => "Public constructor: " + paramterString(c.GetParameters()))
+            ).Concat(
+                type.GetProperties().Where(p => p.GetIndexParameters().Length > 0)
+                .Where(p => p.GetGetMethod().IsPublic)
+                .Select(p => "Indexed property " + p.Name + ": Public getter.")
+            ).Concat(
+               type.GetProperties().Where(p => p.GetIndexParameters().Length == 0)
+               .Where(p => p.GetGetMethod().IsPublic)
+                .Select(p => "Normal property " + p.Name + ": Public getter.")
+            ).Concat(
+                type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Where(m => !m.IsSpecialName)
+                .Select(m => "Public method " + m.Name + ": " + paramterString(m.GetParameters()))
+            ).ToArray();
+            return result;
+        }
+
+        static string paramterString(ParameterInfo[] parameters) 
+        {
+            return parameters.Length > 0 ?
+                String.Join(", ", parameters.Select(p => p.ParameterType.Name + " " + p.Name)) :
+                "no parameter";
         }
 
         #endregion
@@ -74,7 +103,7 @@ namespace CSharpViaTest.OtherBCLs.HandleReflections
                     {
                         "Member information for CSharpViaTest.OtherBCLs.HandleReflections.GetMemberInformation+ForTestCtorProperty",
                         "Non-public constructor: String name, String optional",
-                        "Public constructor: String name",
+                         "Public constructor: String name",
                         "Indexed property Item: Public getter.",
                         "Normal property Name: Public getter."
                     }
