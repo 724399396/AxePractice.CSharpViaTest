@@ -61,27 +61,46 @@ namespace CSharpViaTest.OtherBCLs.HandleReflections
 
         static IEnumerable<string> GetInstanceMemberInformation(Type type)
         {
-            var property = type.GetProperties();
             var result =  new List<string> {
                 $"Member information for {type.FullName}"
             }.Concat(
-                type.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).Select(c => "Non-public constructor: " + paramterString(c.GetParameters()))
+                type.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)
+                .OrderBy(c => c.GetParameters().Length)
+                .Select(c => "Non-public constructor: " + paramterString(c.GetParameters()))
             ).Concat(
-                type.GetConstructors(BindingFlags.Public | BindingFlags.Instance).Select(c => "Public constructor: " + paramterString(c.GetParameters()))
+                type.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
+                .OrderBy(c => c.GetParameters().Length)
+                .Select(c => "Public constructor: " + paramterString(c.GetParameters()))
             ).Concat(
-                type.GetProperties().Where(p => p.GetIndexParameters().Length > 0)
-                .Where(p => p.GetGetMethod().IsPublic)
-                .Select(p => "Indexed property " + p.Name + ": Public getter.")
-            ).Concat(
-               type.GetProperties().Where(p => p.GetIndexParameters().Length == 0)
-               .Where(p => p.GetGetMethod().IsPublic)
-                .Select(p => "Normal property " + p.Name + ": Public getter.")
+                type.GetProperties()
+                .OrderBy(p => p.Name)
+                .Where(p => p.GetGetMethod().IsPublic || p.GetSetMethod().IsPublic)
+                .Select(p => PropertyPrefix(p) + p.Name + ": Public getter.")
             ).Concat(
                 type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                 .Where(m => !m.IsSpecialName)
+                .OrderBy(p => p.Name)
                 .Select(m => "Public method " + m.Name + ": " + paramterString(m.GetParameters()))
             ).ToArray();
             return result;
+        }
+
+        static string PropertyMethodPostFix(PropertyInfo property)
+        {
+            var result = ":";
+            if (property.GetGetMethod().IsPublic)
+            {
+                result += " Public getter";
+            }
+            if (property.GetSetMethod().IsPublic) {
+                result += " Public setter";
+            }
+            return result + ".";
+        }
+
+        static string PropertyPrefix(PropertyInfo property)
+        {
+            return property.GetIndexParameters().Length > 0 ? "Indexed property " : "Normal property ";
         }
 
         static string paramterString(ParameterInfo[] parameters) 
