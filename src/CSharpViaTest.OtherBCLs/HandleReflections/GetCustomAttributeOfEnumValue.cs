@@ -32,20 +32,18 @@ namespace CSharpViaTest.OtherBCLs.HandleReflections
 
         public static string GetDescription<T>(this T value)
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException();
-            }
-            Type type = typeof(T);
-            if (!(value is Enum))
-            {
-                throw new NotSupportedException();
-            }
-            var attributes = type.GetFields()
-                .Where(f => f.Name == value.ToString())
-                .SelectMany(f => f.GetCustomAttributes<MyEnumDescriptionAttribute>())
-                .Select(a => a.Description);
-            return attributes.Any() ? attributes.First() : value.ToString();
+           if (value == null)
+           {
+               throw new ArgumentNullException();
+           }
+           if (!(value is Enum))
+           {
+               throw new NotSupportedException();
+           }
+           var type = typeof(T);
+           var atrributes = type.GetField(value.ToString()).GetCustomAttributes<MyEnumDescriptionAttribute>()
+            .Select(a => a.Description);
+           return atrributes.Any() ? atrributes.First() : value.ToString();
         }
 
         #endregion

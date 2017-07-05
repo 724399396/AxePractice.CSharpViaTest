@@ -61,7 +61,7 @@ namespace CSharpViaTest.OtherBCLs.HandleReflections
 
         static IEnumerable<string> GetInstanceMemberInformation(Type type)
         {
-            var result =  new List<string> {
+            var result =  new [] {
                 $"Member information for {type.FullName}"
             }.Concat(
                 type.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)
@@ -80,8 +80,8 @@ namespace CSharpViaTest.OtherBCLs.HandleReflections
                 type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                 .Where(m => !m.IsSpecialName)
                 .OrderBy(p => p.Name)
-                .Select(m => "Public method " + m.Name + ": " + paramterString(m.GetParameters()))
-            ).ToArray();
+                .Select(m => "Public method " + m.Name + ": " + paramterString(m.GetParameters())
+            ));
             return result;
         }
 
