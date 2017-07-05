@@ -1,8 +1,13 @@
 ﻿using System;
+<<<<<<< HEAD
 using System.Reflection;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+=======
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+>>>>>>> master
 using Xunit;
 
 namespace CSharpViaTest.OtherBCLs.HandleReflections
@@ -103,7 +108,7 @@ namespace CSharpViaTest.OtherBCLs.HandleReflections
                     {
                         "Member information for CSharpViaTest.OtherBCLs.HandleReflections.GetMemberInformation+ForTestCtorProperty",
                         "Non-public constructor: String name, String optional",
-                         "Public constructor: String name",
+                        "Public constructor: String name",
                         "Indexed property Item: Public getter.",
                         "Normal property Name: Public getter."
                     }

@@ -1,6 +1,9 @@
 ﻿using System;
+<<<<<<< HEAD
 using System.Reflection;
 using System.Linq;
+=======
+>>>>>>> master
 using Xunit;
 
 namespace CSharpViaTest.OtherBCLs.HandleReflections
