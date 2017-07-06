@@ -47,7 +47,7 @@ namespace CSharpViaTest.OtherBCLs.HandleReflections
         {
             if (type == null)
             {
-                throw new ArgumentNullException("type");
+                throw new ArgumentNullException(nameof(type));
             }
             return (ReflectionSample) Activator.CreateInstance(Type.GetType(type), arguments);
         }
