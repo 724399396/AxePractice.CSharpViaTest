@@ -44,17 +44,71 @@ namespace CSharpViaTest.OtherBCLs.HandleReflections
         
         static object InvokeMethod(object instance, string methodName, params object[] args)
         {
-            throw new NotImplementedException();
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+            if (methodName == null)
+            {
+                throw new ArgumentNullException(nameof(methodName));
+            }
+            if (args == null)
+            {
+                throw new ArgumentNullException(nameof(args));
+            }
+            var method = instance.GetType().GetMethod(methodName);
+            if (method == null)
+            {
+                throw new InvalidOperationException();
+            }
+            return method.Invoke(instance, args);
         }
 
         static void SetProperty(object instance, string propertyName, object value)
         {
-            throw new NotImplementedException();
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+            if (propertyName == null)
+            {
+                throw new ArgumentNullException(nameof(propertyName));
+            }
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+            var property = instance.GetType().GetProperty(propertyName);
+            if (property == null || property.GetSetMethod() == null || !property.GetSetMethod().IsPublic)
+            {
+                throw new InvalidOperationException();
+            }
+            property.SetValue(instance, value);
         }
 
         static object GetProperty(object instance, string propertyName)
         {
-            throw new NotImplementedException();
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+            if (propertyName == null)
+            {
+                throw new ArgumentNullException(nameof(propertyName));
+            }
+            var property = instance.GetType().GetProperty(propertyName);
+            if (property == null || property.GetGetMethod() == null || !property.GetGetMethod().IsPublic)
+            {
+                throw new InvalidOperationException();
+            }
+            try 
+            {
+                return property.GetValue(instance);
+            }
+            catch
+            {
+                throw new NotSupportedException();
+            }
         }
 
         #endregion
